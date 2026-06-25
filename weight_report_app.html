@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบอ่านใบชั่งน้ำหนัก</title>
+<style>
+:root {
+  --orange:#E8691A; --orange-light:#FDF0E6; --orange-mid:#F5A623; --orange-dark:#B8520E;
+  --gray-50:#FAFAFA; --gray-100:#F4F4F4; --gray-200:#E8E8E8; --gray-400:#ABABAB;
+  --gray-600:#666; --gray-800:#333;
+  --red-bg:#FFF0F0; --red-text:#CC2222; --red-border:#FFCCCC;
+  --green-bg:#F0FFF4; --green-text:#1A7A3A; --green-border:#B8E8C8;
+  --radius:10px; --shadow:0 2px 16px rgba(0,0,0,0.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Sarabun','Noto Sans Thai',sans-serif;
+  color:var(--gray-800); min-height:100vh;
+  background-color:#F2EDE6;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg transform='translate(60,70) rotate(-15)'%3E%3Cellipse cx='0' cy='0' rx='22' ry='28' fill='%23F5E6C8' stroke='%23C8A86B' stroke-width='1.2'/%3E%3Cellipse cx='-10' cy='4' rx='13' ry='18' fill='%23EDD99A' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Cellipse cx='10' cy='4' rx='13' ry='18' fill='%23EDD99A' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Cellipse cx='0' cy='-2' rx='10' ry='15' fill='%23F0E0A8' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Crect x='-3' y='-32' width='6' height='18' rx='3' fill='%2388A860' stroke='%23688040' stroke-width='0.8'/%3E%3Cpath d='M0,-32 Q8,-22 0,-18 Q-8,-22 0,-32' fill='%2388A860'/%3E%3C/g%3E%3Cg transform='translate(300,90) rotate(10)'%3E%3Cellipse cx='0' cy='8' rx='28' ry='26' fill='%23D4607A' stroke='%23A03050' stroke-width='1.2'/%3E%3Cellipse cx='0' cy='8' rx='20' ry='18' fill='%23E07090' stroke='%23A03050' stroke-width='0.6' fill-opacity='0.4'/%3E%3Cellipse cx='0' cy='8' rx='12' ry='11' fill='%23E8809A' stroke='%23A03050' stroke-width='0.4' fill-opacity='0.3'/%3E%3Crect x='-3' y='-22' width='6' height='20' rx='3' fill='%2388A860' stroke='%23688040' stroke-width='0.8'/%3E%3Cpath d='M-3,-22 Q-12,-10 -8,-4' stroke='%2388A860' stroke-width='2' fill='none'/%3E%3Cpath d='M3,-22 Q12,-10 8,-4' stroke='%2388A860' stroke-width='2' fill='none'/%3E%3C/g%3E%3Cg transform='translate(370,260) rotate(20) scale(0.75)'%3E%3Cellipse cx='0' cy='0' rx='22' ry='28' fill='%23F5E6C8' stroke='%23C8A86B' stroke-width='1.2'/%3E%3Cellipse cx='-10' cy='4' rx='13' ry='18' fill='%23EDD99A' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Cellipse cx='10' cy='4' rx='13' ry='18' fill='%23EDD99A' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Cellipse cx='0' cy='-2' rx='10' ry='15' fill='%23F0E0A8' stroke='%23C8A86B' stroke-width='0.8'/%3E%3Crect x='-3' y='-32' width='6' height='18' rx='3' fill='%2388A860' stroke='%23688040' stroke-width='0.8'/%3E%3C/g%3E%3Cg transform='translate(80,320) rotate(-8) scale(0.8)'%3E%3Cellipse cx='0' cy='8' rx='28' ry='26' fill='%23D4607A' stroke='%23A03050' stroke-width='1.2'/%3E%3Cellipse cx='0' cy='8' rx='20' ry='18' fill='%23E07090' stroke='%23A03050' stroke-width='0.6' fill-opacity='0.4'/%3E%3Crect x='-3' y='-22' width='6' height='20' rx='3' fill='%2388A860' stroke='%23688040' stroke-width='0.8'/%3E%3Cpath d='M-3,-22 Q-12,-10 -8,-4' stroke='%2388A860' stroke-width='2' fill='none'/%3E%3Cpath d='M3,-22 Q12,-10 8,-4' stroke='%2388A860' stroke-width='2' fill='none'/%3E%3C/g%3E%3Ccircle cx='160' cy='50' r='6' fill='%23D4607A' fill-opacity='0.2'/%3E%3Ccircle cx='390' cy='160' r='5' fill='%23C8A86B' fill-opacity='0.25'/%3E%3Ccircle cx='30' cy='200' r='7' fill='%23D4607A' fill-opacity='0.18'/%3E%3Ccircle cx='280' cy='400' r='5' fill='%23C8A86B' fill-opacity='0.2'/%3E%3C/svg%3E");
+  background-size:420px 420px;
+}
+.topbar{background:var(--orange);height:5px;}
+.header{
+  background:rgba(255,255,255,0.96);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(232,105,26,0.15);
+  padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  position:sticky;top:0;z-index:100;
+}
+.header-title{font-size:17px;font-weight:700;color:var(--gray-800);display:flex;align-items:center;gap:10px;}
+.quota-pill{
+  background:var(--orange-light);border:1px solid #F5C89A;
+  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--orange-dark);
+  display:flex;align-items:center;gap:7px;
+}
+.quota-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);}
+.quota-banner{
+  background:#FFF3CD;border:1px solid #FFEAA0;
+  padding:10px 32px;font-size:13px;color:#856404;
+  display:none;align-items:center;gap:8px;
+}
+.main{padding:28px 32px;max-width:960px;margin:0 auto;}
+.step-card{
+  background:rgba(255,255,255,0.97);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:24px;overflow:hidden;
+  border:1px solid rgba(232,105,26,0.08);
+}
+.step-header{
+  background:white;border-bottom:1px solid var(--gray-100);
+  padding:15px 22px;display:flex;align-items:center;gap:12px;
+}
+.step-num{
+  width:28px;height:28px;background:var(--orange);color:white;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.step-num.done{background:var(--green-text);}
+.step-label{font-size:15px;font-weight:600;}
+.step-body{padding:22px;}
+.upload-zone{
+  border:2px dashed var(--gray-200);border-radius:var(--radius);
+  padding:36px 24px;text-align:center;cursor:pointer;
+  transition:border-color 0.2s,background 0.2s;
+}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--orange);background:var(--orange-light);}
+.upload-zone input{display:none;}
+.upload-zone p{color:var(--gray-600);font-size:14px;line-height:1.7;}
+.upload-zone strong{color:var(--orange);}
+.preview-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.preview-item{position:relative;width:90px;height:90px;border-radius:8px;overflow:hidden;border:2px solid var(--gray-200);}
+.preview-item img{width:100%;height:100%;object-fit:cover;}
+.preview-remove{
+  position:absolute;top:3px;right:3px;width:18px;height:18px;
+  background:rgba(0,0,0,0.65);color:white;border:none;border-radius:50%;
+  cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;
+}
+.btn{
+  padding:10px 20px;border-radius:8px;border:none;font-size:14px;font-weight:600;
+  cursor:pointer;transition:opacity 0.15s,transform 0.1s;
+  display:inline-flex;align-items:center;gap:8px;font-family:inherit;
+}
+.btn:hover{opacity:0.87;}
+.btn:active{transform:scale(0.97);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-primary{background:var(--orange);color:white;}
+.btn-secondary{background:white;color:var(--gray-800);border:1.5px solid var(--gray-200);}
+.btn-secondary:hover{background:var(--gray-50);border-color:var(--gray-400);}
+.btn-gen{background:white;color:#1A7A3A;border:1.5px solid #1A7A3A;}
+.btn-gen:hover{background:#F0FFF4;}
+.btn-save{background:#1A7A3A;color:white;border:none;padding:12px 28px;font-size:15px;}
+.btn-save:hover{opacity:0.88;}
+.loading-bar{height:4px;background:var(--gray-100);border-radius:2px;overflow:hidden;margin:12px 0;}
+.loading-bar-inner{height:100%;background:var(--orange);border-radius:2px;animation:loadAnim 1.4s ease-in-out infinite;width:40%;}
+@keyframes loadAnim{0%{transform:translateX(-100%);}100%{transform:translateX(350%);}}
+.loading-text{font-size:13px;color:var(--gray-600);text-align:center;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:12px;color:var(--orange);font-weight:600;letter-spacing:0.02em;}
+.form-group input,.form-group select{
+  padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:7px;
+  font-size:14px;font-family:inherit;color:var(--gray-800);background:white;
+  transition:border-color 0.15s;
+}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--orange);}
+.form-group input.changed,.form-group select.changed{border-color:var(--orange-mid);background:#FFFDF8;}
+.table-label{
+  font-size:14px;font-weight:700;color:var(--gray-800);
+  border-left:4px solid var(--orange);padding-left:11px;margin-bottom:10px;
+}
+.table-wrap{overflow-x:auto;}
+table.dt{width:100%;border-collapse:collapse;font-size:14px;}
+table.dt thead tr{background:var(--orange);color:white;}
+table.dt thead th{padding:10px 12px;text-align:center;font-weight:600;white-space:nowrap;}
+table.dt tbody tr:nth-child(even){background:var(--gray-50);}
+table.dt tbody td{padding:7px 8px;border-bottom:1px solid var(--gray-100);text-align:center;}
+table.dt tbody td input{
+  width:100%;padding:6px 7px;border:1.5px solid transparent;border-radius:5px;
+  font-size:13px;text-align:center;font-family:inherit;background:transparent;
+  transition:border-color 0.15s,background 0.15s;
+}
+table.dt tbody td input:focus{border-color:var(--orange);background:white;outline:none;}
+table.dt tbody td input.changed{border-color:var(--orange-mid);background:#FFFDF8;}
+.btn-add-row{
+  margin-top:8px;padding:6px 14px;background:var(--gray-100);
+  border:1px dashed var(--gray-400);border-radius:7px;
+  font-size:13px;color:var(--gray-600);cursor:pointer;font-family:inherit;
+}
+.btn-add-row:hover{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
+.btn-del{background:none;border:none;color:#CC3333;cursor:pointer;padding:3px 7px;border-radius:4px;font-size:13px;}
+.btn-del:hover{background:#FFF0F0;}
+.summary-box{
+  margin-top:18px;background:var(--orange-light);border:1px solid #F5C89A;
+  border-radius:var(--radius);padding:16px 18px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.sum-item{text-align:center;}
+.sum-item .sl{font-size:12px;color:var(--gray-600);margin-bottom:3px;}
+.sum-item .sv{font-size:20px;font-weight:700;color:var(--orange-dark);}
+.diff-box{border-radius:8px;padding:11px 16px;text-align:center;min-width:150px;}
+.diff-box.neg{background:var(--red-bg);border:1px solid var(--red-border);}
+.diff-box.pos{background:var(--green-bg);border:1px solid var(--green-border);}
+.diff-box.zero{background:var(--gray-100);border:1px solid var(--gray-200);}
+.diff-box .dl{font-size:12px;margin-bottom:3px;}
+.diff-box.neg .dl{color:var(--red-text);}
+.diff-box.pos .dl{color:var(--green-text);}
+.diff-box .dv{font-size:17px;font-weight:700;}
+.diff-box.neg .dv{color:var(--red-text);}
+.diff-box.pos .dv{color:var(--green-text);}
+.diff-box .dp{font-size:11px;margin-top:2px;}
+.diff-box.neg .dp{color:#E05555;}
+.diff-box.pos .dp{color:#2E8A50;}
+.action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px;}
+.action-row .sp{flex:1;}
+.result-card{
+  background:rgba(255,255,255,0.97);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:24px;overflow:hidden;
+  border:1px solid rgba(232,105,26,0.08);
+}
+.result-header{
+  background:white;border-bottom:1px solid var(--gray-100);
+  padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.result-img-wrap{
+  padding:20px;background:#F8F8F8;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.result-img-wrap img{
+  max-width:100%;border-radius:8px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.12);border:1px solid var(--gray-200);
+}
+.save-area{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.toast{
+  position:fixed;bottom:22px;right:22px;background:var(--gray-800);color:white;
+  padding:11px 18px;border-radius:8px;font-size:14px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  opacity:0;transform:translateY(10px);transition:opacity 0.25s,transform 0.25s;z-index:999;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.success{background:#1A7A3A;}
+.toast.error{background:#AA2222;}
+.alert{border-radius:8px;padding:11px 15px;font-size:13px;margin-bottom:14px;}
+.alert-info{background:#F0F6FF;border:1px solid #B8D4F8;color:#1A4A8A;}
+.icon{width:18px;height:18px;display:inline-block;vertical-align:middle;flex-shrink:0;}
+@media(max-width:600px){
+  .main{padding:14px;}
+  .form-grid{grid-template-columns:1fr;}
+  .header{padding:12px 14px;}
+}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="header">
+  <div class="header-title">
+    <span style="font-size:22px;">🧅</span>
+    ระบบอ่านใบชั่งน้ำหนัก
+  </div>
+  <div class="quota-pill">
+    <div class="quota-dot" id="quotaDot"></div>
+    <span style="color:var(--gray-600);">Quota วันนี้:</span>
+    <strong id="quotaCount">--</strong><span style="color:var(--gray-600);">/ 15 req</span>
+  </div>
+</div>
+<div class="quota-banner" id="quotaBanner">
+  ⚠️ <strong>Quota หมดแล้วสำหรับวันนี้</strong> — กรุณาใช้งานใหม่พรุ่งนี้ หลังเที่ยงคืน
+</div>
+
+<div class="main">
+  <!-- STEP 1 -->
+  <div class="step-card" id="card-upload">
+    <div class="step-header">
+      <div class="step-num" id="num-1">1</div>
+      <div class="step-label">อัปโหลดภาพใบชั่งน้ำหนัก</div>
+    </div>
+    <div class="step-body">
+      <div class="upload-zone" id="dropZone"
+           onclick="document.getElementById('fileInput').click()"
+           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)" />
+        <div style="font-size:38px;margin-bottom:10px;">📷</div>
+        <p>ลากรูปมาวางที่นี่ หรือ<br><strong>คลิกเพื่อเลือกไฟล์</strong></p>
+        <p style="margin-top:6px;font-size:12px;color:#bbb;">รองรับ JPG, PNG — หลายไฟล์ได้</p>
+      </div>
+      <div class="preview-grid" id="previewGrid"></div>
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-primary" onclick="readImages()" id="readBtn" disabled>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          อ่านข้อมูลด้วย Gemini
+        </button>
+        <span id="readNote" style="font-size:12px;color:var(--gray-400);"></span>
+      </div>
+      <div id="loadingArea" style="display:none;margin-top:14px;">
+        <div class="loading-bar"><div class="loading-bar-inner"></div></div>
+        <p class="loading-text" id="loadingText">กำลังส่งภาพไปยัง Gemini AI...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="card-edit" style="display:none;">
+    <div class="step-header">
+      <div class="step-num" id="num-2">2</div>
+      <div class="step-label">ตรวจสอบและแก้ไขข้อมูล</div>
+    </div>
+    <div class="step-body">
+      <div class="alert alert-info" id="editAlert">
+        ✅ ตรวจสอบความถูกต้องก่อนสร้างรายงาน — ช่องที่แก้ไขจะเปลี่ยนสีส้มอ่อน
+      </div>
+      <div class="table-label">ข้อมูลทั่วไป</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>ผู้นำเข้า</label>
+          <select id="f_importer" onchange="markChanged(this)">
+            <option value="">— เลือกผู้นำเข้า —</option>
+            <option value="ดิเรก">ดิเรก</option>
+            <option value="ติก๊ะ">ติก๊ะ</option>
+            <option value="ก๊ะลี">ก๊ะลี</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>เลขที่ใบขนสินค้า</label>
+          <input type="text" id="f_declaration" placeholder="เช่น A025 06906 07007" oninput="markChanged(this)" />
+        </div>
+        <div class="form-group">
+          <label>น้ำหนักหน้าใบขนสินค้า (KG)</label>
+          <input type="number" id="f_declared_weight" placeholder="เช่น 15000" oninput="markChanged(this);calcSummary()" />
+        </div>
+        <div class="form-group">
+          <label>วันที่</label>
+          <input type="text" id="f_date" placeholder="เช่น 25 มิถุนายน 2569" oninput="markChanged(this)" />
+        </div>
+        <div class="form-group">
+          <label>ประเภทสินค้า</label>
+          <input type="text" id="f_goods_type" placeholder="เช่น หอม, กระเทียม" oninput="markChanged(this)" />
+        </div>
+        <div class="form-group">
+          <label>ชุดที่</label>
+          <input type="text" id="f_period" placeholder="เช่น ชุดที่ 1" oninput="markChanged(this)" />
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="table-label">รายละเอียดการชั่งน้ำหนักรถและสินค้า</div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>ทะเบียนรถ</th>
+                <th>น้ำหนักรถเปล่า (KG)</th>
+                <th>น้ำหนักชั่งได้ (KG)</th>
+                <th>น้ำหนักสินค้าสุทธิ (KG)</th>
+                <th style="width:36px;"></th>
+              </tr>
+            </thead>
+            <tbody id="vehicleBody"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" onclick="addRow()">+ เพิ่มแถว</button>
+      </div>
+
+      <div class="summary-box">
+        <div class="sum-item">
+          <div class="sl">น้ำหนักสินค้าสุทธิทั้งหมด</div>
+          <div class="sv" id="sum_net">0 KG</div>
+        </div>
+        <div class="sum-item">
+          <div class="sl">น้ำหนักหน้าใบขนสินค้า</div>
+          <div class="sv" id="sum_declared">- KG</div>
+        </div>
+        <div class="diff-box zero" id="diffBox">
+          <div class="dl">ผลต่างน้ำหนัก</div>
+          <div class="dv" id="diff_val">-</div>
+          <div class="dp" id="diff_pct"></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="resetAll()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          เริ่มใหม่
+        </button>
+        <div class="sp"></div>
+        <button class="btn btn-gen" onclick="generateImage()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          สร้างรายงาน
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="result-card" id="card-result" style="display:none;">
+    <div class="result-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="step-num done">✓</div>
+        <span style="font-size:15px;font-weight:600;">รายงานพร้อมแล้ว</span>
+      </div>
+      <button class="btn btn-secondary" onclick="document.getElementById('card-result').style.display='none'" style="padding:6px 14px;font-size:13px;">ปิด</button>
+    </div>
+    <div class="result-img-wrap">
+      <img id="resultImg" src="" alt="รายงานน้ำหนัก" />
+      <div class="save-area">
+        <button class="btn btn-save" onclick="saveImage()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          บันทึกรูป
+        </button>
+        <button class="btn btn-secondary" onclick="generateImage()" style="padding:10px 18px;">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          สร้างใหม่
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<canvas id="reportCanvas" style="display:none;"></canvas>
+
+<script>
+const GEMINI_API_KEY = 'YOUR_API_KEY_HERE';
+const GEMINI_MODEL   = 'gemini-1.5-flash';
+const QUOTA_MAX      = 15;
+
+let uploadedFiles=[], quotaUsed=0, rowIdx=0, lastFilename='weight_report.png';
+
+// ── THEME per importer ────────────────────────────────────
+function getTheme(importer) {
+  if (importer==='ก๊ะลี')  return { primary:'#E8691A', light:'#FDF0E6', mid:'#F5A623', dark:'#B8520E', border:'#F5C89A', rowAlt:'#FDF8F5', totalBg:'#F5DFC0', totalTxt:'#7A3800', infoLbl:'#E8691A' };
+  if (importer==='ติก๊ะ') return { primary:'#1A7A3A', light:'#EDF7F1', mid:'#3DAA60', dark:'#0F5028', border:'#90CFA8', rowAlt:'#F4FBF6', totalBg:'#C8EDD6', totalTxt:'#0A3A1E', infoLbl:'#1A7A3A' };
+  if (importer==='ดิเรก') return { primary:'#1A55A0', light:'#EBF2FC', mid:'#3A7FD5', dark:'#0E3570', border:'#90B8E8', rowAlt:'#F2F6FC', totalBg:'#C0D8F5', totalTxt:'#0A2550', infoLbl:'#1A55A0' };
+  // default orange
+  return { primary:'#E8691A', light:'#FDF0E6', mid:'#F5A623', dark:'#B8520E', border:'#F5C89A', rowAlt:'#FDF8F5', totalBg:'#F5DFC0', totalTxt:'#7A3800', infoLbl:'#E8691A' };
+}
+
+// ── QUOTA ─────────────────────────────────────────────────
+function loadQuota() {
+  const today=new Date().toDateString();
+  const saved=JSON.parse(localStorage.getItem('gemini_quota')||'{}');
+  quotaUsed=(saved.date===today)?(saved.used||0):0;
+  if (saved.date!==today) saveQuota();
+  updateQuotaDisplay();
+}
+function saveQuota(){localStorage.setItem('gemini_quota',JSON.stringify({date:new Date().toDateString(),used:quotaUsed}));}
+function useQuota(){quotaUsed++;saveQuota();updateQuotaDisplay();}
+function updateQuotaDisplay(){
+  const rem=Math.max(0,QUOTA_MAX-quotaUsed);
+  const el=document.getElementById('quotaCount'), dot=document.getElementById('quotaDot');
+  el.textContent=rem;
+  if(rem===0){el.style.color='#CC2222';dot.style.background='#CC2222';document.getElementById('quotaBanner').style.display='flex';}
+  else if(rem<=5){el.style.color='var(--orange)';dot.style.background='var(--orange)';}
+  else{el.style.color='#1A7A3A';dot.style.background='#1A7A3A';}
+}
+
+// ── UPLOAD ────────────────────────────────────────────────
+function onDragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag-over');}
+function onDragLeave(){document.getElementById('dropZone').classList.remove('drag-over');}
+function onDrop(e){e.preventDefault();onDragLeave();handleFiles(e.dataTransfer.files);}
+function handleFiles(files){
+  for(const f of files){if(!f.type.startsWith('image/'))continue;uploadedFiles.push(f);renderPreview(f,uploadedFiles.length-1);}
+  updateReadBtn();
+}
+function renderPreview(file,idx){
+  const r=new FileReader();
+  r.onload=e=>{
+    const grid=document.getElementById('previewGrid');
+    const item=document.createElement('div');item.className='preview-item';item.id='prev-'+idx;
+    item.innerHTML=`<img src="${e.target.result}"/><button class="preview-remove" onclick="removeFile(${idx})">×</button>`;
+    grid.appendChild(item);
+  };r.readAsDataURL(file);
+}
+function removeFile(idx){uploadedFiles.splice(idx,1);document.getElementById('previewGrid').innerHTML='';uploadedFiles.forEach((f,i)=>renderPreview(f,i));updateReadBtn();}
+function updateReadBtn(){
+  const rem=QUOTA_MAX-quotaUsed;
+  const btn=document.getElementById('readBtn'),note=document.getElementById('readNote');
+  const ok=uploadedFiles.length>0&&rem>0&&GEMINI_API_KEY!=='YOUR_API_KEY_HERE';
+  btn.disabled=!ok;
+  if(rem<=0)note.textContent='⚠️ Quota หมดแล้ว';
+  else if(GEMINI_API_KEY==='YOUR_API_KEY_HERE')note.textContent='⚠️ ยังไม่ได้ตั้งค่า API Key';
+  else note.textContent='';
+}
+
+// ── GEMINI ────────────────────────────────────────────────
+async function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+async function readImages(){
+  if(QUOTA_MAX-quotaUsed<=0){showToast('Quota หมดแล้ว — ใช้ใหม่พรุ่งนี้','error');return;}
+  document.getElementById('loadingArea').style.display='block';
+  document.getElementById('readBtn').disabled=true;
+  const setL=t=>document.getElementById('loadingText').textContent=t;
+  setL('กำลังเตรียมภาพ...');
+  try{
+    const parts=[];
+    for(const f of uploadedFiles){const b64=await fileToBase64(f);parts.push({inline_data:{mime_type:f.type,data:b64}});}
+    const prompt=`คุณคือระบบอ่านใบชั่งน้ำหนักสินค้า ปาดังเบซาร์
+อ่านข้อมูลจากภาพแล้วส่งกลับเป็น JSON เท่านั้น ห้ามมีข้อความอื่น:
+{"importer":"ดิเรก หรือ ติก๊ะ หรือ ก๊ะลี","declaration_no":"เลขที่ใบขน","declared_weight":KG,"date":"วันที่","goods_type":"ประเภทสินค้า","period":"ชุดที่","vehicles":[{"plate":"ทะเบียน","empty_weight":KG,"gross_weight":KG,"net_weight":KG}]}
+net_weight=gross_weight-empty_weight, ตัวเลขไม่มี comma, ไม่พบข้อมูลใส่ null`;
+    parts.push({text:prompt});
+    setL('กำลังส่งไปยัง Gemini AI...');
+    const resp=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}]})});
+    if(!resp.ok){const err=await resp.json();throw new Error(err.error?.message||`HTTP ${resp.status}`);}
+    const data=await resp.json();
+    useQuota();
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    populateForm(parsed);
+    document.getElementById('card-edit').style.display='block';
+    document.getElementById('card-edit').scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('num-1').classList.add('done');document.getElementById('num-1').textContent='✓';
+    showToast('อ่านข้อมูลสำเร็จ ✓','success');
+  }catch(err){
+    let msg=err.message||'เกิดข้อผิดพลาด';
+    if(msg.includes('API_KEY'))msg='API Key ไม่ถูกต้อง';
+    if(msg.includes('quota'))msg='Quota หมด — ใช้ใหม่พรุ่งนี้';
+    showToast('ผิดพลาด: '+msg,'error');
+  }finally{document.getElementById('loadingArea').style.display='none';updateReadBtn();}
+}
+
+// ── FORM ──────────────────────────────────────────────────
+function populateForm(data){
+  setF('f_importer',matchImporter(data.importer));
+  setF('f_declaration',data.declaration_no);
+  setF('f_declared_weight',data.declared_weight);
+  setF('f_date',data.date);
+  setF('f_goods_type',data.goods_type);
+  setF('f_period',data.period);
+  document.getElementById('vehicleBody').innerHTML='';rowIdx=0;
+  const vs=data.vehicles||[];
+  if(vs.length===0)addRow();else vs.forEach(v=>addRow(v));
+  calcSummary();
+}
+function matchImporter(val){
+  if(!val)return'';const v=val.toLowerCase();
+  if(v.includes('ดิเรก')||v.includes('direk'))return'ดิเรก';
+  if(v.includes('ติก')||v.includes('tika'))return'ติก๊ะ';
+  if(v.includes('ลี')||v.includes('lee')||v.includes('li'))return'ก๊ะลี';
+  return'';
+}
+function setF(id,val){const el=document.getElementById(id);if(!el)return;el.value=(val!=null&&val!=='')? val:'';}
+function markChanged(el){el.classList.add('changed');}
+
+// ── ROWS ──────────────────────────────────────────────────
+function fmtNum(val){
+  // format number with comma for display in input
+  if(val===''||val==null)return'';
+  const n=parseFloat(String(val).replace(/,/g,''));
+  return isNaN(n)?'':n.toLocaleString('en-US');
+}
+function addRow(data={}){
+  const tbody=document.getElementById('vehicleBody');
+  const i=rowIdx++;
+  const emV=data.empty_weight||'';
+  const grV=data.gross_weight||'';
+  const neV=data.net_weight||'';
+  const tr=document.createElement('tr');tr.id='row-'+i;
+  tr.innerHTML=`
+    <td style="color:#aaa;font-size:13px;">${tbody.children.length+1}</td>
+    <td><input type="text" id="plate_${i}" value="${data.plate||''}" placeholder="ทะเบียนรถ" oninput="markChanged(this)"/></td>
+    <td><input type="text" id="empty_${i}" value="${emV?Number(emV).toLocaleString('en-US'):''}" placeholder="0" oninput="markChanged(this);calcSummary()"/></td>
+    <td><input type="text" id="gross_${i}" value="${grV?Number(grV).toLocaleString('en-US'):''}" placeholder="0" oninput="markChanged(this);autoNet(${i})"/></td>
+    <td><input type="text" id="net_${i}" value="${neV?Number(neV).toLocaleString('en-US'):''}" placeholder="อัตโนมัติ" oninput="markChanged(this);calcSummary()" style="background:#FAFAFA;"/></td>
+    <td><button class="btn-del" onclick="removeRow('row-${i}')">✕</button></td>`;
+  tbody.appendChild(tr);reNumberRows();
+}
+function getNumVal(id){return parseFloat((document.getElementById(id)?.value||'').replace(/,/g,''))||0;}
+function autoNet(i){
+  const em=getNumVal('empty_'+i), gr=getNumVal('gross_'+i);
+  const ne=document.getElementById('net_'+i);
+  if(ne&&gr>0){const n=gr-em;ne.value=n>0?n.toLocaleString('en-US'):'';}
+  calcSummary();
+}
+function removeRow(id){document.getElementById(id)?.remove();reNumberRows();calcSummary();}
+function reNumberRows(){document.querySelectorAll('#vehicleBody tr').forEach((tr,i)=>{const td=tr.querySelector('td:first-child');if(td)td.textContent=i+1;});}
+
+// ── SUMMARY ───────────────────────────────────────────────
+function calcSummary(){
+  let tN=0;
+  document.querySelectorAll('#vehicleBody tr').forEach(tr=>{
+    const ne=tr.querySelector('td:nth-child(5) input');
+    if(ne)tN+=parseFloat((ne.value||'').replace(/,/g,''))||0;
+  });
+  const declRaw=(document.getElementById('f_declared_weight')?.value||'').replace(/,/g,'');
+  const decl=parseFloat(declRaw)||0;
+  const diff=tN-decl, pct=decl>0?((diff/decl)*100).toFixed(2):0;
+  document.getElementById('sum_net').textContent=tN.toLocaleString('en-US')+' KG';
+  document.getElementById('sum_declared').textContent=decl>0?decl.toLocaleString('en-US')+' KG':'- KG';
+  const db=document.getElementById('diffBox'),dv=document.getElementById('diff_val'),dp=document.getElementById('diff_pct');
+  db.className='diff-box';
+  if(decl===0){db.classList.add('zero');dv.textContent='-';dp.textContent='';}
+  else if(diff<0){db.classList.add('neg');dv.textContent=diff.toLocaleString('en-US')+' KG';dp.textContent=`(น้อยกว่าที่แจ้ง ${Math.abs(pct)}%)`;}
+  else if(diff>0){db.classList.add('pos');dv.textContent='+'+diff.toLocaleString('en-US')+' KG';dp.textContent=`(มากกว่าที่แจ้ง ${pct}%)`;}
+  else{db.classList.add('zero');dv.textContent='0 KG';dp.textContent='ตรงกัน 100%';}
+}
+
+// ── GENERATE IMAGE ────────────────────────────────────────
+function generateImage(){
+  const im  = document.getElementById('f_importer').value||'-';
+  const dn  = document.getElementById('f_declaration').value||'-';
+  const dw  = (document.getElementById('f_declared_weight').value||'0').replace(/,/g,'');
+  const dt  = document.getElementById('f_date').value||'-';
+  const gt  = document.getElementById('f_goods_type').value||'-';
+  const pd  = document.getElementById('f_period').value||'-';
+  const decl= parseFloat(dw)||0;
+  const T   = getTheme(im);
+
+  const vrows=[];let tE=0,tG=0,tN=0;
+  document.querySelectorAll('#vehicleBody tr').forEach((tr,idx)=>{
+    const pl=tr.querySelector('td:nth-child(2) input')?.value||'-';
+    const em=parseFloat((tr.querySelector('td:nth-child(3) input')?.value||'').replace(/,/g,''))||0;
+    const gr=parseFloat((tr.querySelector('td:nth-child(4) input')?.value||'').replace(/,/g,''))||0;
+    const ne=parseFloat((tr.querySelector('td:nth-child(5) input')?.value||'').replace(/,/g,''))||0;
+    tE+=em;tG+=gr;tN+=ne;
+    vrows.push({num:idx+1,plate:pl,empty:em,gross:gr,net:ne});
+  });
+  const diff=tN-decl, pct=decl>0?((diff/decl)*100).toFixed(2):0;
+
+  const W=800, rowH=44;
+  const totalH=8+88+110+40+rowH*(vrows.length+2)+12+32+90+50+36;
+  const canvas=document.getElementById('reportCanvas');
+  canvas.width=W; canvas.height=totalH;
+  const c=canvas.getContext('2d');
+  const G2='#E8E8E8',G6='#666',G8='#333';
+  const RB='#FFF0F0',RT='#CC2222',GB='#F0FFF4',GT='#1A7A3A';
+
+  const rr=(x,y,w,h,r,fill,stroke)=>{
+    c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);
+    c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);
+    c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);
+    c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);
+    c.quadraticCurveTo(x,y,x+r,y);c.closePath();
+    if(fill){c.fillStyle=fill;c.fill();}
+    if(stroke){c.strokeStyle=stroke;c.lineWidth=1;c.stroke();}
+  };
+  const txt=(t,x,y,font,color,align='left')=>{c.font=font;c.fillStyle=color;c.textAlign=align;c.fillText(t,x,y);};
+
+  let y=0;
+  // Top stripe
+  c.fillStyle=T.primary;c.fillRect(0,0,W,8);y=8;
+  // Header bg
+  c.fillStyle='white';c.fillRect(0,y,W,88);
+  txt('รายงานสรุปน้ำหนัก '+gt,40,y+42,'bold 26px Sarabun,sans-serif',G8);
+  txt(dt,W-40,y+42,'16px Sarabun,sans-serif','#AAA','right');
+  c.strokeStyle=T.primary;c.lineWidth=2;
+  c.beginPath();c.moveTo(40,y+60);c.lineTo(W-40,y+60);c.stroke();
+  y+=88;
+
+  // Info box
+  rr(30,y+10,W-60,92,8,T.light,T.border);
+  const c1=60,c2=W/2+20,lh=27;
+  const lbl=(t,x,yy)=>txt(t,x,yy,'bold 13px Sarabun,sans-serif',T.infoLbl);
+  const val=(t,x,yy)=>txt(t,x,yy,'14px Sarabun,sans-serif',G8);
+  lbl('ผู้นำเข้า:',c1,y+36);val(im,c1+75,y+36);
+  lbl('เลขที่ใบขนสินค้า:',c2,y+36);val(dn,c2+122,y+36);
+  lbl('น้ำหนักหน้าใบขน:',c1,y+36+lh);val(decl>0?decl.toLocaleString('en-US')+' KG':'-',c1+122,y+36+lh);
+  lbl('ชุดที่:',c2,y+36+lh);val(pd,c2+48,y+36+lh);
+  lbl('ประเภทสินค้า:',c1,y+36+lh*2);val(gt,c1+94,y+36+lh*2);
+  y+=110;
+
+  // Section label
+  c.fillStyle=T.primary;c.fillRect(30,y,5,22);
+  txt('ตารางรายละเอียดการชั่งน้ำหนักรถและสินค้า',42,y+16,'bold 15px Sarabun,sans-serif',G8);
+  y+=32;
+
+  // Table header
+  const cols=[{w:50,label:'#'},{w:150,label:'ทะเบียนรถ'},{w:160,label:'น้ำหนักรถเปล่า (KG)'},{w:160,label:'น้ำหนักชั่งได้ (KG)'},{w:160,label:'น้ำหนักสินค้าสุทธิ (KG)'}];
+  let cx=30;
+  c.fillStyle=T.primary;c.fillRect(30,y,W-60,rowH);
+  cols.forEach(col=>{txt(col.label,cx+col.w/2,y+rowH/2+6,'bold 13px Sarabun,sans-serif','white','center');cx+=col.w;});
+  y+=rowH;
+
+  // Rows
+  vrows.forEach((row,i)=>{
+    c.fillStyle=i%2===0?'white':T.rowAlt;c.fillRect(30,y,W-60,rowH);
+    c.strokeStyle=G2;c.lineWidth=0.5;
+    c.beginPath();c.moveTo(30,y+rowH);c.lineTo(W-30,y+rowH);c.stroke();
+    let cx2=30;
+    const cells=[row.num,row.plate,
+      row.empty>0?row.empty.toLocaleString('en-US'):'-',
+      row.gross>0?row.gross.toLocaleString('en-US'):'-',
+      row.net>0?row.net.toLocaleString('en-US'):'-'];
+    cells.forEach((cell,ci)=>{
+      txt(String(cell),cx2+cols[ci].w/2,y+rowH/2+6,'14px Sarabun,sans-serif',ci===4?T.dark:G8,'center');
+      cx2+=cols[ci].w;
+    });
+    y+=rowH;
+  });
+
+  // Total row
+  c.fillStyle=T.totalBg;c.fillRect(30,y,W-60,rowH);
+  let cx3=30;
+  const totals=['','รวมทั้งสิ้น',tE>0?tE.toLocaleString('en-US'):'-',tG>0?tG.toLocaleString('en-US'):'-',tN>0?tN.toLocaleString('en-US'):'-'];
+  totals.forEach((cell,ci)=>{txt(String(cell),cx3+cols[ci].w/2,y+rowH/2+6,'bold 14px Sarabun,sans-serif',ci===4?T.totalTxt:G8,'center');cx3+=cols[ci].w;});
+  y+=rowH+20;
+
+  // Summary label
+  c.fillStyle=T.primary;c.fillRect(30,y,5,22);
+  txt('สรุปผลการเปรียบเทียบน้ำหนัก',42,y+16,'bold 15px Sarabun,sans-serif',G8);
+  y+=32;
+
+  // 3 boxes
+  const bw=Math.floor((W-60-16)/3),bh=70;
+  const bx=[30,30+bw+8,30+(bw+8)*2];
+  const drawBox=(x,lbl2,val2,sub,fill,border,tc,vc)=>{
+    rr(x,y,bw,bh,8,fill,border);
+    txt(lbl2,x+bw/2,y+22,'13px Sarabun,sans-serif',tc,'center');
+    txt(val2,x+bw/2,y+46,'bold 20px Sarabun,sans-serif',vc,'center');
+    if(sub)txt(sub,x+bw/2,y+62,'11px Sarabun,sans-serif',tc,'center');
+  };
+  drawBox(bx[0],'น้ำหนักสินค้าสุทธิทั้งหมด',tN.toLocaleString('en-US')+' KG','',T.light,T.border,'#705020',T.dark);
+  drawBox(bx[1],'น้ำหนักหน้าใบขนสินค้า',decl>0?decl.toLocaleString('en-US')+' KG':'-','',T.light,T.border,'#705020',T.dark);
+  const dfStr=diff===0?'0 KG':(diff>0?'+':'')+diff.toLocaleString('en-US')+' KG';
+  const dfFill=diff<0?RB:diff>0?GB:'#F4F4F4';
+  const dfBord=diff<0?'#FFCCCC':diff>0?'#B8E8C8':'#E8E8E8';
+  const dfTc=diff<0?RT:diff>0?GT:G6;
+  const dfSub=decl>0?`(${diff<0?'น้อยกว่า':'มากกว่า'}ที่แจ้ง ${Math.abs(pct)}%)`:'';
+  drawBox(bx[2],'ผลต่างน้ำหนัก',dfStr,dfSub,dfFill,dfBord,dfTc,dfTc);
+  y+=bh+18;
+
+  // Footer
+  c.strokeStyle='#E0E0E0';c.lineWidth=1;c.beginPath();c.moveTo(30,y);c.lineTo(W-30,y);c.stroke();y+=12;
+  txt('ระบบอ่านใบชั่งน้ำหนัก | Gemini Vision',40,y+14,'12px Sarabun,sans-serif','#BBB');
+  txt(new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}),W-40,y+14,'12px Sarabun,sans-serif','#BBB','right');
+
+  const imgData=canvas.toDataURL('image/png');
+  document.getElementById('resultImg').src=imgData;
+  document.getElementById('card-result').style.display='block';
+  document.getElementById('card-result').scrollIntoView({behavior:'smooth',block:'start'});
+  lastFilename=`weight_report_${(dn||'unknown').replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.png`;
+  showToast('สร้างรายงานสำเร็จ ✓','success');
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+function saveImage(){
+  const img=document.getElementById('resultImg').src;
+  if(!img||img===''){showToast('ยังไม่มีรูปรายงาน','error');return;}
+  const a=document.createElement('a');a.href=img;a.download=lastFilename;a.click();
+  showToast('บันทึกรูปแล้ว ✓','success');
+}
+
+// ── RESET ─────────────────────────────────────────────────
+function resetAll(){
+  if(!confirm('ต้องการเริ่มใหม่ทั้งหมดใช่ไหม?'))return;
+  uploadedFiles=[];rowIdx=0;
+  document.getElementById('previewGrid').innerHTML='';
+  document.getElementById('fileInput').value='';
+  document.getElementById('card-edit').style.display='none';
+  document.getElementById('card-result').style.display='none';
+  document.getElementById('num-1').className='step-num';
+  document.getElementById('num-1').textContent='1';
+  document.getElementById('vehicleBody').innerHTML='';
+  updateReadBtn();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+let toastT;
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;
+  clearTimeout(toastT);toastT=setTimeout(()=>t.className='toast',3200);
+}
+
+window.addEventListener('DOMContentLoaded',()=>{loadQuota();updateReadBtn();});
+</script>
+</body>
+</html>
